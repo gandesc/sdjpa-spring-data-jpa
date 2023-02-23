@@ -1,16 +1,23 @@
 package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Author;
+import guru.springframework.jdbc.repositories.AuthorRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * Created by jt on 8/28/21.
  */
+@RequiredArgsConstructor
 @Component
 public class AuthorDaoImpl implements AuthorDao {
+
+    private final AuthorRepository authorRepository;
+
     @Override
     public Author getById(Long id) {
-        return null;
+        return authorRepository.getReferenceById(id);
     }
 
     @Override
@@ -20,16 +27,22 @@ public class AuthorDaoImpl implements AuthorDao {
 
     @Override
     public Author saveNewAuthor(Author author) {
-        return null;
+        return authorRepository.save(author);
     }
 
+    @Transactional
     @Override
     public Author updateAuthor(Author author) {
-        return null;
+        Author entity = authorRepository.getReferenceById(author.getId());
+
+        entity.setLastName(author.getLastName());
+        entity.setFirstName(author.getFirstName());
+
+        return authorRepository.save(entity);
     }
 
     @Override
     public void deleteAuthorById(Long id) {
-
+        authorRepository.deleteById(id);
     }
 }
