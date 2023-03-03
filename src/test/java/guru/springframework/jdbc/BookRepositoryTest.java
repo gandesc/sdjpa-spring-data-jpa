@@ -1,5 +1,6 @@
 package guru.springframework.jdbc;
 
+import guru.springframework.jdbc.domain.Book;
 import guru.springframework.jdbc.repositories.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -21,6 +24,15 @@ public class BookRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Test
+    void testBookFuture() throws ExecutionException, InterruptedException {
+        Future<Book> future = bookRepository.queryByTitle("Clean Code");
+
+        Book book = future.get();
+
+        assertThat(book).isNotNull();
+    }
 
     @Test
     void testEmptyResultException() {
