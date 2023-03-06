@@ -26,6 +26,13 @@ public class BookRepositoryTest {
     BookRepository bookRepository;
 
     @Test
+    void testBookQueryNamed() {
+        Book book = bookRepository.findByTitleWithQueryNamed("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
     void testBookQuery() {
         Book book = bookRepository.findByTitleWithQuery("Clean Code");
 
