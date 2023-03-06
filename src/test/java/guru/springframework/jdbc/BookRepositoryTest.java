@@ -26,6 +26,13 @@ public class BookRepositoryTest {
     BookRepository bookRepository;
 
     @Test
+    void testBookQuery() {
+        Book book = bookRepository.findByTitleWithQuery("Clean Code");
+
+        assertThat(book).isNotNull();
+    }
+
+    @Test
     void testBookFuture() throws ExecutionException, InterruptedException {
         Future<Book> future = bookRepository.queryByTitle("Clean Code");
 
