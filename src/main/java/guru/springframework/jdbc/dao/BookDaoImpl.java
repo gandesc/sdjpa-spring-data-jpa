@@ -30,7 +30,7 @@ public class BookDaoImpl implements BookDao {
 
     @Transactional
     @Override
-    public void updateBook(Book book) {
+    public Book updateBook(Book book) {
         Book entity = repository.findById(book.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
@@ -38,7 +38,7 @@ public class BookDaoImpl implements BookDao {
         entity.setIsbn(book.getIsbn());
         entity.setPublisher(book.getPublisher());
 
-        repository.save(entity);
+        return repository.save(entity);
     }
 
     @Override
