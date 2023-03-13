@@ -5,9 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class BookDaoJDBCTemplate implements BookDao{
     public final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public List<Book> findAllBooks() {
+        return jdbcTemplate.query("SELECT * FROM book", getBookMapper());
+    }
 
     @Override
     public Book getById(Long id) {

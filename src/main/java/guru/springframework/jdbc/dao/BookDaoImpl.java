@@ -7,11 +7,18 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
 public class BookDaoImpl implements BookDao {
 
     private final BookRepository repository;
+
+    @Override
+    public List<Book> findAllBooks() {
+        return null;
+    }
 
     @Override
     public Book saveNewBook(Book book) {
