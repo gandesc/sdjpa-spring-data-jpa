@@ -2,14 +2,25 @@ package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class BookDaoJDBCTemplate implements BookDao{
+public class BookDaoJDBCTemplate implements BookDao {
     public final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public List<Book> findAllBooks(Pageable pageable) {
+        return jdbcTemplate.query(
+                "SELECT * FROM book LIMIT ? OFFSET ? ",
+                getBookMapper(),
+                pageable.getPageSize(),
+                pageable.getOffset()
+        );
+    }
 
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {

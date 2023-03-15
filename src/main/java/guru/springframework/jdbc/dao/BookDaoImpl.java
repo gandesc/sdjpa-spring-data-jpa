@@ -5,6 +5,7 @@ import guru.springframework.jdbc.repositories.BookRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.List;
 public class BookDaoImpl implements BookDao {
 
     private final BookRepository repository;
+
+    @Override
+    public List<Book> findAllBooks(Pageable pageable) {
+        return null;
+    }
 
     @Override
     public List<Book> findAllBooks(int pageSize, int offset) {
