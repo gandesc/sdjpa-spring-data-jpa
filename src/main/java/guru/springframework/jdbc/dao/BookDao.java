@@ -20,9 +20,9 @@ public interface BookDao {
 
     Book getById(Long id);
 
+    Book findBookByTitle(String title);
+
     Book updateBook(Book book);
 
     void deleteBookById(Long id);
-
-    Book findBookByTitle(String title);
 }
