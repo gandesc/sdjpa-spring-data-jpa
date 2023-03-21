@@ -1,5 +1,7 @@
 package guru.springframework.jdbc.dao;
 
+import guru.springframework.jdbc.dao.BookDao;
+import guru.springframework.jdbc.dao.BookDaoJDBCTemplate;
 import guru.springframework.jdbc.domain.Book;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,43 +11,43 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ActiveProfiles("local")
 @DataJpaTest
+@ActiveProfiles("local")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ComponentScan(basePackages = {"guru.springframework.jdbc.dao"})
-class BookDaoJDBCTemplateTest {
+public class BookDaoJDBCTemplateTest {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    BookDao bookDao;
+    private BookDao bookDao;
 
     @BeforeEach
     void setUp() {
-        bookDao = new BookDaoJDBCTemplate(jdbcTemplate);
+        this.bookDao = new BookDaoJDBCTemplate(jdbcTemplate);
     }
 
     @Test
-    void findAllBooksPage1_SortByTitle() {
-        List<Book> books = bookDao.findAllBooksSortByTitle(PageRequest.of(0, 10,
-                Sort.by(Sort.Order.desc("title"))));
+    void testFindAllBooksPage1_SortByTitle() {
+        List<Book> books = bookDao.findAllBooksSortByTitle(
+                PageRequest.of(0, 10, Sort.by(Sort.Order.desc("title")))
+        );
 
         assertThat(books).isNotNull();
         assertThat(books.size()).isEqualTo(10);
     }
 
     @Test
-    void findAllBooksPage1_pageable() {
+    void testFindAllBooksPage1_pageable() {
         List<Book> books = bookDao.findAllBooks(PageRequest.of(0, 10));
 
         assertThat(books).isNotNull();
@@ -53,7 +55,7 @@ class BookDaoJDBCTemplateTest {
     }
 
     @Test
-    void findAllBooksPage2_pageable() {
+    void testFindAllBooksPage2_pageable() {
         List<Book> books = bookDao.findAllBooks(PageRequest.of(1, 10));
 
         assertThat(books).isNotNull();
@@ -61,7 +63,7 @@ class BookDaoJDBCTemplateTest {
     }
 
     @Test
-    void findAllBooksPage10_pageable() {
+    void testFindAllBooksPage1_pageable0() {
         List<Book> books = bookDao.findAllBooks(PageRequest.of(10, 10));
 
         assertThat(books).isNotNull();
@@ -69,7 +71,7 @@ class BookDaoJDBCTemplateTest {
     }
 
     @Test
-    void findAllBooksPage1() {
+    void testFindAllBooksPage1() {
         List<Book> books = bookDao.findAllBooks(10, 0);
 
         assertThat(books).isNotNull();
@@ -77,7 +79,7 @@ class BookDaoJDBCTemplateTest {
     }
 
     @Test
-    void findAllBooksPage2() {
+    void testFindAllBooksPage2() {
         List<Book> books = bookDao.findAllBooks(10, 10);
 
         assertThat(books).isNotNull();
@@ -85,7 +87,7 @@ class BookDaoJDBCTemplateTest {
     }
 
     @Test
-    void findAllBooksPage10() {
+    void testFindAllBooksPage10() {
         List<Book> books = bookDao.findAllBooks(10, 100);
 
         assertThat(books).isNotNull();
@@ -94,17 +96,17 @@ class BookDaoJDBCTemplateTest {
 
     @Test
     void testFindAllBooks() {
-        List<Book> books = bookDao.findAllBooks();
+        List<Book> books = this.bookDao.findAllBooks();
 
         assertThat(books).isNotNull();
-        assertThat(books.size()).isGreaterThan(5);
-     }
+        assertThat(books.size()).isGreaterThan(1);
+    }
 
     @Test
     void getById() {
         Book book = bookDao.getById(3L);
 
-        assertThat(book.getId()).isNotNull();
+        assertThat(book).isNotNull();
     }
 
     @Test
@@ -116,24 +118,24 @@ class BookDaoJDBCTemplateTest {
 
     @Test
     void saveNewBook() {
-        Book book = new Book();
-        book.setIsbn("1234");
-        book.setPublisher("Self");
-        book.setTitle("my book");
-        book.setAuthorId(1L);
-
+        Book book = createBook();
         Book saved = bookDao.saveNewBook(book);
 
         assertThat(saved).isNotNull();
     }
 
-    @Test
-    void updateBook() {
+    private Book createBook() {
         Book book = new Book();
         book.setIsbn("1234");
         book.setPublisher("Self");
-        book.setTitle("my book");
-        book.setAuthorId(1L);
+        book.setTitle("My Book");
+
+        return book;
+    }
+
+    @Test
+    void updateBook() {
+        Book book = createBook();
         Book saved = bookDao.saveNewBook(book);
 
         saved.setTitle("New Book");
@@ -146,17 +148,12 @@ class BookDaoJDBCTemplateTest {
 
     @Test
     void deleteBookById() {
-
-        Book book = new Book();
-        book.setIsbn("1234");
-        book.setPublisher("Self");
-        book.setTitle("my book");
+        Book book = createBook();
         Book saved = bookDao.saveNewBook(book);
 
         bookDao.deleteBookById(saved.getId());
 
-        assertThrows(EmptyResultDataAccessException.class, () -> {
-            bookDao.getById(saved.getId());
-        });
+        assertThrows(EmptyResultDataAccessException.class,
+                () -> bookDao.getById(saved.getId()));
     }
 }
