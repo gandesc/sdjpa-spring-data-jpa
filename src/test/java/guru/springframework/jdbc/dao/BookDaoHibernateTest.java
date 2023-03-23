@@ -2,13 +2,13 @@ package guru.springframework.jdbc.dao;
 
 import guru.springframework.jdbc.domain.Book;
 import jakarta.persistence.EntityManagerFactory;
-import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -26,7 +26,16 @@ public class BookDaoHibernateTest {
 
     @BeforeEach
     void setup() {
-        bookDao  = new BookDaoHibernate(emf);
+        bookDao = new BookDaoHibernate(emf);
+    }
+
+    @Test
+    void testFindAllBooksPageable() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Book> books = bookDao.findAllBooks(pageable);
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(10);
     }
 
     @Test
