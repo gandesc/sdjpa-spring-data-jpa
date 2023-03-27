@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -29,6 +30,14 @@ public class BookDaoHibernateTest {
         bookDao = new BookDaoHibernate(emf);
     }
 
+    @Test
+    void findAllBooksSortByTitle() {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("title")));
+        List<Book> books = bookDao.findAllBooksSortByTitle(pageable);
+
+        assertThat(books).isNotNull();
+        assertThat(books.size()).isEqualTo(10);
+    }
     @Test
     void testFindAllBooksPageable() {
         Pageable pageable = PageRequest.of(0, 10);
