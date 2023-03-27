@@ -32,7 +32,7 @@ public class BookDaoHibernateTest {
 
     @Test
     void findAllBooksSortByTitle() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("title")));
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.desc("title")));
         List<Book> books = bookDao.findAllBooksSortByTitle(pageable);
 
         assertThat(books).isNotNull();
