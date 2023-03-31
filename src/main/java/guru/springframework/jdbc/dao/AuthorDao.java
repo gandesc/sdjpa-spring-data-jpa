@@ -12,6 +12,7 @@ public interface AuthorDao {
     Author getById(Long id);
 
     List<Author> findAllAuthorsByLastName(String lastName, Pageable page);
+
     Author findAuthorByName(String firstName, String lastName);
 
     Author saveNewAuthor(Author author);
